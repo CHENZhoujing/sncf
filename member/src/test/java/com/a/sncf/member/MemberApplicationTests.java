@@ -1,10 +1,10 @@
-package com.a.sncf;
+package com.a.sncf.member;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SncfApplicationTests {
+class MemberApplicationTests {
 
     @Test
     void contextLoads() {
