@@ -1,15 +1,21 @@
 package com.a.sncf.member.conig;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.Environment;
 
 @SpringBootApplication
-  @ComponentScan(basePackages = "com.a.sncf.member")
+@ComponentScan(basePackages = "com.a.sncf.member")
 public class MemberApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(MemberApplication.class, args);
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(MemberApplication.class);
 
+    public static void main(String[] args) {
+        SpringApplication application = new SpringApplication(MemberApplication.class);
+        Environment env = application.run(args).getEnvironment();
+        LOGGER.info("Application '{}' is running on port: {}", env.getProperty("spring.application.name"), env.getProperty("server.port"));
+    }
 }
