@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.a.sncf.member")
+@ComponentScan(basePackages = {"com.a.sncf.member", "com.a.sncf.common"})
 public class MemberApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(MemberApplication.class);

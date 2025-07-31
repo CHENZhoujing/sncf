@@ -1,4 +1,4 @@
-package com.a.sncf.member.aspect;
+package com.a.sncf.common.aspect;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
@@ -38,7 +38,7 @@ public class LogAspect {
         EXCLUDE_FILTER.addExcludes(EXCLUDE_PROPERTIES);
     }
 
-    @Pointcut("execution(* com.a.sncf.member..*Controller.*(..))")
+    @Pointcut("execution(* com.a..*Controller.*(..))")
     public void controllerPointcut() {
     }
 
