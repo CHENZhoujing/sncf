@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.a.sncf.member.mapper.MemberMapper">
+
+    <!--
+      查询 member 表的总记录数
+      对应 MemberMapper.count() 方法
+    -->
+    <select id="count" resultType="int">
+        SELECT COUNT(1)
+        FROM member
+    </select>
+
+</mapper>
