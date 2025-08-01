@@ -1,5 +1,7 @@
 package com.a.sncf.member.controller;
 
+import com.a.sncf.common.response.CommonResponse;
+import com.a.sncf.member.request.MemberRegisterRequest;
 import com.a.sncf.member.service.MemberService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +16,18 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("/count")
-    public Integer count() {
-        return memberService.count();
+    public CommonResponse<Integer> count() {
+        Integer count = memberService.count();
+        CommonResponse<Integer> response = new CommonResponse<>(count);
+        response.setMessage("Member count retrieved successfully");
+        return response;
     }
 
     @PostMapping("/register")
-    public Long register(String mobile) {
-        return memberService.register(mobile);
+    public CommonResponse<Long> register(MemberRegisterRequest memberRegisterRequest) {
+        long register = memberService.register(memberRegisterRequest);
+        CommonResponse<Long> response = new CommonResponse<>(register);
+        response.setMessage("Member registered successfully");
+        return response;
     }
 }
