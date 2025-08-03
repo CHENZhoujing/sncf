@@ -1,6 +1,10 @@
 package com.a.sncf.member.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class MemberRegisterRequest {
+
+    @NotBlank(message = "Mobile number cannot be blank")
     private String mobile;
 
     public String getMobile() {

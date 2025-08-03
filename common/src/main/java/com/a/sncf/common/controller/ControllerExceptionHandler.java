@@ -4,6 +4,7 @@ import com.a.sncf.common.exception.BusinessException;
 import com.a.sncf.common.response.CommonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,10 +26,20 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = BusinessException.class)
     @ResponseBody
     public CommonResponse<Void> exceptionHandler(BusinessException e) {
-        LOG.error("Business Exception occurred: ", e);
+        LOG.error("Business Exception occurred: {}", e.getBusinessExceptionEnum().getDescription());
         CommonResponse<Void> commonResponse = new CommonResponse<>();
         commonResponse.setSuccess(false);
         commonResponse.setMessage(e.getBusinessExceptionEnum().getDescription());
+        return commonResponse;
+    }
+
+    @ExceptionHandler(value = BindException.class)
+    @ResponseBody
+    public CommonResponse<Void> exceptionHandler(BindException e) {
+        LOG.error("Validation Exception occurred: {}", e.getAllErrors().get(0).getDefaultMessage());
+        CommonResponse<Void> commonResponse = new CommonResponse<>();
+        commonResponse.setSuccess(false);
+        commonResponse.setMessage(e.getAllErrors().get(0).getDefaultMessage());
         return commonResponse;
     }
 }
