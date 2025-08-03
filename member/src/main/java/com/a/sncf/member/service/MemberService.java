@@ -1,6 +1,8 @@
 package com.a.sncf.member.service;
 
 import cn.hutool.core.collection.CollUtil;
+import com.a.sncf.common.exception.BusinessException;
+import com.a.sncf.common.exception.BusinessExceptionEnum;
 import com.a.sncf.member.domain.Member;
 import com.a.sncf.member.domain.MemberExample;
 import com.a.sncf.member.mapper.MemberMapper;
@@ -28,7 +30,7 @@ public class MemberService {
 
         if(CollUtil.isNotEmpty(memberList)){
             //return memberList.get(0).getId();
-            throw new RuntimeException("Member with this mobile already exists");
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
         }
 
         Member member = new Member();

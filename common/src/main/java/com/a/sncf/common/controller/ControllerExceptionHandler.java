@@ -1,5 +1,6 @@
 package com.a.sncf.common.controller;
 
+import com.a.sncf.common.exception.BusinessException;
 import com.a.sncf.common.response.CommonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,21 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public CommonResponse<Void> exceptionHandler(Exception e) throws Exception {
-        LOG.error("Exception occurred: ", e);
+    public CommonResponse<Void> exceptionHandler(Exception e){
+        LOG.error("System Exception occurred, please contact the administrator");
         CommonResponse<Void> commonResponse = new CommonResponse<>();
         commonResponse.setSuccess(false);
-        commonResponse.setMessage(e.getMessage());
+        commonResponse.setMessage("An unexpected error occurred: " + e.getMessage());
+        return commonResponse;
+    }
+
+    @ExceptionHandler(value = BusinessException.class)
+    @ResponseBody
+    public CommonResponse<Void> exceptionHandler(BusinessException e) {
+        LOG.error("Business Exception occurred: ", e);
+        CommonResponse<Void> commonResponse = new CommonResponse<>();
+        commonResponse.setSuccess(false);
+        commonResponse.setMessage(e.getBusinessExceptionEnum().getDescription());
         return commonResponse;
     }
 }
