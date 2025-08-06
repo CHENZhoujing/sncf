@@ -2,9 +2,10 @@ package com.a.sncf.member.controller;
 
 import com.a.sncf.common.response.CommonResponse;
 import com.a.sncf.member.request.MemberRegisterRequest;
+import com.a.sncf.member.request.MemberSendCodeRequest;
 import com.a.sncf.member.service.MemberService;
 import jakarta.annotation.Resource;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +26,16 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public CommonResponse<Long> register(@Validated MemberRegisterRequest memberRegisterRequest) {
+    public CommonResponse<Long> register(@Valid MemberRegisterRequest memberRegisterRequest) {
         long register = memberService.register(memberRegisterRequest);
         CommonResponse<Long> response = new CommonResponse<>(register);
         response.setMessage("Member registered successfully");
         return response;
+    }
+
+    @PostMapping("/send-code")
+    public CommonResponse<Void> sendCode(@Valid MemberSendCodeRequest memberSendCodeRequest) {
+        memberService.sendCode(memberSendCodeRequest);
+        return new  CommonResponse<>(null);
     }
 }
