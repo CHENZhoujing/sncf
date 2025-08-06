@@ -1,7 +1,9 @@
 package com.a.sncf.common.exception;
 
 public enum BusinessExceptionEnum {
-    MEMBER_MOBILE_EXIST("Member mobile already exists");
+    MEMBER_MOBILE_EXIST("Member mobile already registered"),
+    MEMBER_MOBILE_NOT_EXIST("Get validation first"),
+    MEMBER_MOBILE_CODE_ERROR("Incorrect verification code");
 
     private String description;
 

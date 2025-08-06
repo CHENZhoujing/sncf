@@ -1,15 +1,18 @@
 package com.a.sncf.member.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.a.sncf.common.exception.BusinessException;
 import com.a.sncf.common.exception.BusinessExceptionEnum;
 import com.a.sncf.common.util.SnowUtil;
 import com.a.sncf.member.domain.Member;
 import com.a.sncf.member.domain.MemberExample;
 import com.a.sncf.member.mapper.MemberMapper;
+import com.a.sncf.member.request.MemberLoginRequest;
 import com.a.sncf.member.request.MemberRegisterRequest;
 import com.a.sncf.member.request.MemberSendCodeRequest;
+import com.a.sncf.member.response.MemberLoginResponse;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +32,11 @@ public class MemberService {
         return Math.toIntExact(memberMapper.countByExample(null));
     }
 
-    public Long register(MemberRegisterRequest memberRegisterRequest)  {
+    public Long register(MemberRegisterRequest memberRegisterRequest) {
         String mobile = memberRegisterRequest.getMobile();
-        MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(mobile);
-        List<Member> memberList = memberMapper.selectByExample(memberExample);
+        Member memberDB = selectByMobile(mobile);
 
-        if(CollUtil.isNotEmpty(memberList)){
-            //return memberList.get(0).getId();
+        if (ObjectUtil.isNotNull(memberDB)) {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
         }
 
@@ -49,11 +49,8 @@ public class MemberService {
 
     public void sendCode(MemberSendCodeRequest memberSendCodeRequest) {
         String mobile = memberSendCodeRequest.getMobile();
-        MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(mobile);
-        List<Member> memberList = memberMapper.selectByExample(memberExample);
-
-        if(CollUtil.isEmpty(memberList)){
+        Member memberDB = selectByMobile(mobile);
+        if (ObjectUtil.isNull(memberDB)) {
             LOG.info("Member with mobile {} does not exist, creating new member", mobile);
             Member member = new Member();
             member.setId(SnowUtil.getSnowflakeNextId());
@@ -69,5 +66,33 @@ public class MemberService {
         //保存短信记录表：手机号，短信验证码，有效期，是否已使用，业务类型，发送时间，使用时间等
         LOG.info("Saving SMS record for mobile {} with code {}", mobile, code);
         //对接短信通道，发送短信
+    }
+
+    public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {
+        String mobile = memberLoginRequest.getMobile();
+        String code = memberLoginRequest.getCode();
+        Member memberDB = selectByMobile(mobile);
+
+        if (ObjectUtil.isNull(memberDB)) {
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_NOT_EXIST);
+        }
+
+        //校验短信验证码
+        if (!"888888".equals(code)) {
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_CODE_ERROR);
+        }
+
+        return BeanUtil.copyProperties(memberDB, MemberLoginResponse.class);
+    }
+
+    private Member selectByMobile(String mobile) {
+        MemberExample memberExample = new MemberExample();
+        memberExample.createCriteria().andMobileEqualTo(mobile);
+        List<Member> memberList = memberMapper.selectByExample(memberExample);
+        if (CollUtil.isEmpty(memberList)) {
+            return null;
+        } else {
+            return memberList.get(0);
+        }
     }
 }

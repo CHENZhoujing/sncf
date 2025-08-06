@@ -1,8 +1,10 @@
 package com.a.sncf.member.controller;
 
 import com.a.sncf.common.response.CommonResponse;
+import com.a.sncf.member.request.MemberLoginRequest;
 import com.a.sncf.member.request.MemberRegisterRequest;
 import com.a.sncf.member.request.MemberSendCodeRequest;
+import com.a.sncf.member.response.MemberLoginResponse;
 import com.a.sncf.member.service.MemberService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -26,16 +28,23 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public CommonResponse<Long> register(@Valid MemberRegisterRequest memberRegisterRequest) {
-        long register = memberService.register(memberRegisterRequest);
+    public CommonResponse<Long> register(@Valid MemberRegisterRequest request) {
+        long register = memberService.register(request);
         CommonResponse<Long> response = new CommonResponse<>(register);
         response.setMessage("Member registered successfully");
         return response;
     }
 
     @PostMapping("/send-code")
-    public CommonResponse<Void> sendCode(@Valid MemberSendCodeRequest memberSendCodeRequest) {
-        memberService.sendCode(memberSendCodeRequest);
-        return new  CommonResponse<>(null);
+    public CommonResponse<Void> sendCode(@Valid MemberSendCodeRequest request) {
+        memberService.sendCode(request);
+        return new CommonResponse<>(null);
+    }
+
+    @PostMapping("/login")
+    public CommonResponse<MemberLoginResponse> login(@Valid MemberLoginRequest request) {
+        MemberLoginResponse response = memberService.login(request);
+
+        return new CommonResponse<>(response);
     }
 }
